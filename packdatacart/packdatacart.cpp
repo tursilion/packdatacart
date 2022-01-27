@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
 		printf("Failed to open program file, code %d\n", errno);
 		return 2;
 	}
-	egofill(buf, EGOSTRING, PAGESIZE);
+	memset(buf, 0, PAGESIZE);
 	fread(buf, 1, PAGESIZE, fIn);
 
 	fgetc(fIn);
@@ -89,11 +89,11 @@ int main(int argc, char *argv[]) {
 		printf("- starting address %X (page >%04X)\n", adr, bank);
 
 		while (!feof(fIn)) {
-			egofill(buf, EGOSTRING, PAGESIZE);
+			memset(buf, 0, PAGESIZE);
 			memcpy(buf, header, HDRSIZE);
 			if (0 == fread(&buf[HDRSIZE], 1, PAGESIZE-HDRSIZE, fIn)) break;
 			fwrite(buf, 1, PAGESIZE, fOut);
-			++bank;
+			bank+=2;
 			adr+=PAGESIZE;
 		}
 
@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
 		memcpy(buf, header, HDRSIZE);
 		while (adr < x) {
 			fwrite(buf, 1, PAGESIZE, fOut);
-			++bank;
+			bank+=2;
 			adr+=PAGESIZE;
 		}
 	}
